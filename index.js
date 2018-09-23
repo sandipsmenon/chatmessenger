@@ -1,5 +1,7 @@
 var express = require('express');
 var socket = require('socket.io');
+var routes = require("./routes/routes.js");
+var bodyParser = require("body-parser");
 
 // App setup
 var app = express();
@@ -9,6 +11,10 @@ var server = app.listen(4000, function(){
 
 // Static files
 app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+routes(app);
 
 // Socket setup & pass server
 var io = socket(server);
