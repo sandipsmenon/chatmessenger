@@ -2,6 +2,8 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
 var socket = require('socket.io');
+var routes = require("./routes/routes.js");
+var bodyParser = require("body-parser");
 
 
 // Configure the Facebook strategy for use by Passport.
@@ -94,6 +96,12 @@ var server = app.listen(4000, function(){
     console.log('listening for requests on port 4000,');
 });
 
+// Static files
+app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+routes(app);
 
 
  var io = socket(server);
