@@ -22,8 +22,8 @@ mongoose.connect(dbConfig.url, {
 
 
 
-//mongoose.connect('mongodb://localhost:27017/chatmessenger');
-//const db = mongoose.connect('mongodb://localhost:27017/chatmessenger');
+
+var path = require('path');
 
 let Schema = mongoose.Schema;
 
@@ -102,7 +102,8 @@ app.use(passport.session());
 // Define routes.
 app.get('/',
   function(req, res) {
-    res.render('login', { user: req.user });
+   // res.render('login', { user: req.user });
+    res.sendFile(path.join(__dirname + '/public/index.html'));
   });
 
   app.get('/test',
@@ -110,25 +111,123 @@ app.get('/',
     res.json({validated:'test'});
   });
 
-app.get('/login',
+app.get('/home',
   function(req, res){
-    res.render('login');
-  });
+   res.sendFile(path.join(__dirname, './public/rooms.html'));
+});
+
 
 app.get('/login/facebook',
   passport.authenticate('facebook'));
 
-app.get('/login/facebook/return', 
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/profile');
-  });
-
-app.get('/profile',
+app.get('/login/facebook/return',
+  passport.authenticate('facebook', { successRedirect: '/home',
+                                      failureRedirect: '/login/facebook' }));
+  
+app.get('/loadData',
   require('connect-ensure-login').ensureLoggedIn(),
   function(req, res){
-    res.render('profile', { user: req.user });
+	  console.log('inside load data');
+	  var rooms ={"userName":"subbu",
+				  "userId":"35333",
+				  "users":[
+				  {
+					  userId:"884",
+					  userName:"rohit"
+				  },
+				   {
+					  userId:"786",
+					  userName:"sam"
+				  },
+				   {
+					  userId:"535",
+					  userName:"raj"
+				  },
+				   {
+					  userId:"886",
+					  userName:"sandip"
+				  },
+				   {
+					  userId:"564",
+					  userName:"rajeswar"
+				  },
+				   {
+					  userId:"45",
+					  userName:"phani"
+				  }
+				  ],
+				  
+				"roomsList": [
+			{
+			  roomId:"75757",
+			  value: "devops",
+			  members:[
+			  {
+			  memberId:"53555",
+			  memberName:"Rohit"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Ratan"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Sam"
+			  },
+			  {
+			  memberId:"3555",
+			  memberName:"John"
+			  }
+			  ]
+		  },
+		  {			  
+			  roomId:"6655",
+			  value: "smart learning",
+			  members:[
+			  {
+			  memberId:"53555",
+			  memberName:"Rohit"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Ratan"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Sam"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"John"
+			  }
+			  ]
+		  },
+		  {
+			  roomId:"1234",
+			  value: "Agile",
+			  members:[
+			  {
+			  memberId:"53555",
+			  memberName:"Rohit"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Ratan"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"Sam"
+			  },
+			  {
+			  memberId:"53555",
+			  memberName:"John"
+			  }]
+		  }
+	  ]};
+	  res.json(JSON.stringify(rooms));
   });
+    //res.render('profile', { user: req.user });
+  
 
 require('./routes/note.routes.js')(app);
 
@@ -148,14 +247,14 @@ routes(app);
 io.on('connection', (socket) => {
 
     console.log('made socket connection', socket.id);
-	var room = socket.handshake['query']['r_var'];
+	//var room = socket.handshake['query']['r_var'];
 
-	socket.join(room);
-	console.log('user joined room #'+room);
+	//socket.join(room);
+	//console.log('user joined room #'+room);
 
 	//disconnect
 	socket.on('disconnect', function() {
-		socket.leave(room);
+	//	socket.leave(room);
 		console.log('user disconnected');
 	});
 	
@@ -169,9 +268,9 @@ io.on('connection', (socket) => {
 	});
 
     // Handle chat event
-    socket.on('chat', function(data){
-        // console.log(data);
-        io.sockets.emit('chat', data);
+    socket.on('one-one chat', function(data){
+         console.log(data);
+        io.sockets.emit('one-one chat', data);
     });
 
     // Handle typing event

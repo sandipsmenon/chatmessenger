@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!--link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"-->
+		
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="chat.js"></script>
+        <link href="/styles.css" rel="stylesheet" />
+		<script>
+		$("#dialog").dialog("close");
+		</script>
+    </head>
+    <body>
+	<h2 id="welcomeMessage"></h2>
+	<input type="hidden" name="loggedInUser" />
+	<input type="hidden" name="userId" />
+	<h2>chat page</h2>
+	<div border="1">
+	<table width="100%">
+	<tr>
+	<td style="width:150px; height: 20px">
+	<table id="roomsTable" width="70%" class="hipchat" border=1>
+	<tr>
+	<th><span></span>&nbsp;ROOMS</th>
+	</tr>
+	</table>
+	</td>
+	<td style="width:200px; height: 150px">
+	 <div id="dialog1">
+            <h2> Chat Room</h2>
+            <div id="chat-window">
+                <div id="output1"></div>
+                <div id="feedback1"></div>
+            </div>
+            <input id="handle1" type="text" placeholder="Handle" />
+            <input id="message1" type="text" placeholder="Message" />
+            <button id="send1">Send</button>
+			
+        </div>
+	</td>
+	<td style="width: 140px; height: 50px">
+	      <h2> Room Members</h2>
+           <table id="roomMembersTable" width="70%" class="hipchat" border=1>
+				
+			</table>
+		</td>
+     
+	</td>
+	</tr>
+	<tr>
+	<td style="width: 200px; height: 50px"><table id="usersTable" width="70%"  border=1>
+	<tr>
+	<th><span></span>&nbsp;Available Users</th>
+	</tr>
+	</table>
+	</tr>	
+	<tr>
+	<td><button type="button">Create a room</button></td>
+	
+	</tr>
+	</table>
+	</div>
+	 
+	<div id="dialogplaceholder">
+	</div>
+	
+    </body>
+   
+</html>
