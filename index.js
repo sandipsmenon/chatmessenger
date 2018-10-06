@@ -3,9 +3,38 @@ var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
 var socket = require('socket.io');
 var routes = require("./routes/routes.js");
+
 var bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const dbConfig = require('./routes/databse.config.js');
 
 
+mongoose.Promise = global.Promise;
+
+mongoose.connect(dbConfig.url, {
+  useNewUrlParser: true
+}).then(() => {
+  console.log("Successfully connected to the database");    
+}).catch(err => {
+  console.log('Could not connect to the database. Exiting now...', err);
+  process.exit();
+});
+
+
+
+//mongoose.connect('mongodb://localhost:27017/chatmessenger');
+//const db = mongoose.connect('mongodb://localhost:27017/chatmessenger');
+
+let Schema = mongoose.Schema;
+
+const activitySchema = new Schema({
+    activity_name :String,
+    quantity :Number 
+},{
+  timestamps :true
+});
+
+//const Activity = mongoose.model('Activity',activitySchema);
 // Configure the Facebook strategy for use by Passport.
 //
 // OAuth 2.0-based strategies require a `verify` function which receives the
@@ -49,6 +78,10 @@ passport.deserializeUser(function(obj, cb) {
 // Create a new Express application.
 var app = express();
 
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// parse application/json
+app.use(bodyParser.json())
 // Configure view engine to render EJS templates.
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -72,6 +105,11 @@ app.get('/',
     res.render('login', { user: req.user });
   });
 
+  app.get('/test',
+  function(req, res) {
+    res.json({validated:'test'});
+  });
+
 app.get('/login',
   function(req, res){
     res.render('login');
@@ -91,6 +129,8 @@ app.get('/profile',
   function(req, res){
     res.render('profile', { user: req.user });
   });
+
+require('./routes/note.routes.js')(app);
 
 var server = app.listen(4000, function(){
     console.log('listening for requests on port 4000,');

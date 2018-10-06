@@ -15,8 +15,25 @@ var appRouter = function (app) {
         res.status(403).json(" Invalid error code");
       }
     
-      });
+      }),
+      app.get('/:userID/contacts', (req, res) => {
+        res.json(
+         
+          [
+                {
+                    id: req.params.userID,
+                    title: "Alison"
+                   
+                },
+                {
+                    id: 2,
+                    title: "Einstein"
+                }
+            ])
+    });
+      
 
+      
   }
   
   module.exports = appRouter;
