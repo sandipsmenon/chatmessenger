@@ -5,9 +5,8 @@ The google oauth2 is used to get the user logged into to the app and the app int
 
 Docker commands to create the image :
 
-
 docker build -t chatmessenger .
 
-Docker command to run the image on the container :
+Docker command to run the image on the container:
 
 docker run -p 4000:4000 -d chatmessenger
