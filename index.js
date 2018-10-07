@@ -1,17 +1,23 @@
 var express = require('express');
 var passport = require('passport');
+var passportgithub = require('passport-github2');
 var Strategy = require('passport-facebook').Strategy;
 var socket = require('socket.io');
 var routes = require("./routes/routes.js");
-
+var githubOAuth = require("github-oauth")
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dbConfig = require('./routes/databse.config.js');
-
+const superagent = require("superagent");
+const authRoutes = require('./routes/auth-route');
+const profileRoutes = require('./routes/profile-route');
+const passportSetup = require('./config/passport-setup');
+const cookieSession = require('cookie-session');
+const keys = require('./config/keys');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(dbConfig.url, {
+mongoose.connect(dbConfig.dbURL, {
   useNewUrlParser: true
 }).then(() => {
   console.log("Successfully connected to the database");    
@@ -20,52 +26,18 @@ mongoose.connect(dbConfig.url, {
   process.exit();
 });
 
-
-
-
 var path = require('path');
 
-let Schema = mongoose.Schema;
-
-const activitySchema = new Schema({
-    activity_name :String,
-    quantity :Number 
-},{
-  timestamps :true
-});
-
-//const Activity = mongoose.model('Activity',activitySchema);
-// Configure the Facebook strategy for use by Passport.
-//
-// OAuth 2.0-based strategies require a `verify` function which receives the
-// credential (`accessToken`) for accessing the Facebook API on the user's
-// behalf, along with the user's profile.  The function must invoke `cb`
-// with a user object, which will be set at `req.user` in route handlers after
-// authentication.
 passport.use(new Strategy({
     clientID: 591170154635070,
     clientSecret: '3cdaa9d035bc83fe1e4a7199eda0a0ac',
     callbackURL: 'http://localhost:4000/login/facebook/return'
   },
   function(accessToken, refreshToken, profile, cb) {
-    // In this example, the user's Facebook profile is supplied as the user
-    // record.  In a production-quality application, the Facebook profile should
-    // be associated with a user record in the application's database, which
-    // allows for account linking and authentication with other identity
-    // providers.
     return cb(null, profile);
   }));
 
 
-// Configure Passport authenticated session persistence.
-//
-// In order to restore authentication state across HTTP requests, Passport needs
-// to serialize users into and deserialize users out of the session.  In a
-// production-quality application, this would typically be as simple as
-// supplying the user ID when serializing, and querying the user record by ID
-// from the database when deserializing.  However, due to the fact that this
-// example does not have a database, the complete Facebook profile is serialized
-// and deserialized.
 passport.serializeUser(function(user, cb) {
   cb(null, user);
 });
@@ -78,6 +50,8 @@ passport.deserializeUser(function(obj, cb) {
 // Create a new Express application.
 var app = express();
 
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // parse application/json
@@ -86,17 +60,25 @@ app.use(bodyParser.json())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-// Use application-level middleware for common functionality, including
-// logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
-// Initialize Passport and restore authentication state, if any, from the
-// session.
+
+//app.use(cookieSession({
+//  maxAge: 24 * 60 * 60 * 1000,
+//  keys: [keys.session.cookieKey]
+//}));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Modularise the google apis.
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+// set up session cookies
+
 
 
 // Define routes.
