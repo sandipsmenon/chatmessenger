@@ -1,20 +1,24 @@
-node {
- 	// Clean workspace before doing anything
-    deleteDir()
+pipeline {
 
-    try {
-        stage ('Clone') {
-        	checkout scm
+    agent {
+        docker {
+            image 'node'
+            args '-u root'
         }
-        stage ('Build') {
-        	sh "echo 'shell scripts to build project...'"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'npm install'
+            }
         }
-    
-      	stage ('Deploy') {
-            sh "docker images'"
-      	}
-    } catch (err) {
-        currentBuild.result = 'FAILED'
-        throw err
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'npm start'
+            }
+        }
     }
 }
