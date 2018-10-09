@@ -14,7 +14,7 @@ const profileRoutes = require('./routes/profile-route');
 const passportSetup = require('./config/passport-setup');
 const cookieSession = require('cookie-session');
 const keys = require('./config/keys');
-
+var hashMap1 = require('hashmap');
 mongoose.Promise = global.Promise;
 
 mongoose.connect(dbConfig.dbURL, {
@@ -79,7 +79,7 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 // set up session cookies
 
-
+ var map = new hashMap1();
 
 // Define routes.
 app.get('/',
@@ -142,7 +142,7 @@ app.get('/loadData',
 				"roomsList": [
 			{
 			  roomId:"75757",
-			  value: "devops",
+			  value: "Devops",
 			  members:[
 			  {
 			  memberId:"53555",
@@ -164,7 +164,7 @@ app.get('/loadData',
 		  },
 		  {			  
 			  roomId:"6655",
-			  value: "smart learning",
+			  value: "SmartLearning",
 			  members:[
 			  {
 			  memberId:"53555",
@@ -206,10 +206,15 @@ app.get('/loadData',
 			  }]
 		  }
 	  ]};
+	  
+	 
+	  var subbu_rooms=['Agile','Devops','SmartLearning'];
+	  //var subbu_rooms={};
+	  map.set("subbu", subbu_rooms);
+	  map.set("arun", subbu_rooms);
+      console.log('map size' + map.size); 
 	  res.json(JSON.stringify(rooms));
   });
-    //res.render('profile', { user: req.user });
-  
 
 require('./routes/note.routes.js')(app);
 
@@ -225,15 +230,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 routes(app);
 
 
- var io = socket(server);
-io.on('connection', (socket) => {
+var io = socket(server);
+ io.on('connection', (socket) => {
 
+	var user1 = socket.handshake.query.currentUser;
     console.log('made socket connection', socket.id);
-	//var room = socket.handshake['query']['r_var'];
-
-	//socket.join(room);
+	console.log("curentuser.."+ user1);
+	console.log("map size inside socket.."+ map.size);
+	map.forEach(function(value, key) {
+		console.log(key + " : " + value);
+		value.forEach(function(room) {
+			console.log(room);
+			socket.join(room);
+		});
+	});
+	//io.sockets.emit('main chat',data);
 	//console.log('user joined room #'+room);
-
+	console.log(socket.rooms);
+	socket.on('main chat', function(data) {
+		console.log('grabbing on server', data);
+		var room = data.handle;
+		var message = data.message;
+		io.to(room).emit('main chat', data);
+	});
 	//disconnect
 	socket.on('disconnect', function() {
 	//	socket.leave(room);
@@ -251,13 +270,35 @@ io.on('connection', (socket) => {
 
     // Handle chat event
     socket.on('one-one chat', function(data){
-         console.log(data);
-        io.sockets.emit('one-one chat', data);
+        console.log(data);
+		//var userName = data.handle;
+		//var socketId = data.targetUser;
+		var room=data.handle + '_' ;
+		var targetUser=data.targetUser;
+		console.log(room);
+		finalroom= room + targetUser;
+		//console.log(finalroom);
+		var clients = io.sockets.clients();
+		/*var sockets = socketio.sockets.sockets;
+		for(var socketId in sockets)
+		{
+			var socket1 = sockets[socketId]; //loop through and do whatever with each connected socket
+			socket1.join(data.handle_data_targetUser);
+		//...
+		}*/
+		if(socket.rooms[finalroom]){
+		 // in the room
+		  console.log('existing');
+		  io.to(finalroom).emit('one-one chat', data);
+		}else{
+		// not in the room
+			console.log('new room');
+			socket.join(finalroom);
+		}       
     });
 
     // Handle typing event
     socket.on('typing', function(data){
         socket.broadcast.emit('typing', data);
     });
-
 });

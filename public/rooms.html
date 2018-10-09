@@ -9,16 +9,17 @@
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="chat.js"></script>
+		<script src="utility.js"></script>
         <link href="/styles.css" rel="stylesheet" />
 		<script>
-		$("#dialog").dialog("close");
+		
 		</script>
     </head>
     <body>
-	<h2 id="welcomeMessage"></h2>
-	<input type="hidden" name="loggedInUser" />
+	<p id="welcomeMessage"></p>
+	<input type="hidden" id="loggedInUser" name="loggedInUser" />
 	<input type="hidden" name="userId" />
-	<h2>chat page</h2>
+	
 	<div border="1">
 	<table width="100%">
 	<tr>
@@ -29,20 +30,13 @@
 	</tr>
 	</table>
 	</td>
-	<td style="width:200px; height: 150px">
-	 <div id="dialog1">
-            <h2> Chat Room</h2>
-            <div id="chat-window">
-                <div id="output1"></div>
-                <div id="feedback1"></div>
-            </div>
-            <input id="handle1" type="text" placeholder="Handle" />
-            <input id="message1" type="text" placeholder="Message" />
-            <button id="send1">Send</button>
-			
-        </div>
+	<td rowspan="2" style="width:200px; height: 150px">
+	 <div id="mainchatplaceholder">
+          		
+    </div>
 	</td>
 	<td style="width: 140px; height: 50px">
+	
 	      <h2> Room Members</h2>
            <table id="roomMembersTable" width="70%" class="hipchat" border=1>
 				
@@ -52,7 +46,7 @@
 	</td>
 	</tr>
 	<tr>
-	<td style="width: 200px; height: 50px"><table id="usersTable" width="70%"  border=1>
+	<td style="width: 200px; height: 50px"><table id="usersTable" width="70%" class="onechat" border=1>
 	<tr>
 	<th><span></span>&nbsp;Available Users</th>
 	</tr>
