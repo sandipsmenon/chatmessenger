@@ -16,8 +16,7 @@
 		$('#loggedInUser').text(obj.userName);	
 		$('#loggedInUser').val(obj.userName);
 		//alert("logged.." + $('#loggedInUser').val());
-		userfinal=obj.userName;
-		
+		userfinal=obj.userName;		
 		$('#welcomeMessage').text('Welcome '+ obj.userName);
 		 socket1 = io.connect('http://localhost:4000?currentUser='+obj.userName);
 		 socket1.on('one-one chat', function(data){
@@ -35,35 +34,56 @@
 				div.setAttribute("id", divId);
 				div.innerHTML = '<p>' +'hi....' + '</p>';
 				var html1=' <div class="chat-window"><div id="output"></div><div id="feedback"></div>'+
-				'</div><input id="message" type="text" placeholder="Message" /><button id="send" onclick="emitMessage()">Send</button>';
+				'</div><input id="message" class="msgclass" type="text" placeholder="Message" /><button id="send" onclick="emitMessage()">Send</button>';
 				div.innerHTML=html1;				
 				divplaceholder.appendChild(div);			
 				$('#'+divId).dialog();	
 			}
+		 });
 		socket1.on('main chat', function(data){
 		    alert('grabbing it on client');
-			var feedback2 = document.getElementById('feedback'),
-			 output2 = document.getElementById('output');
-			feedback2.innerHTML = "";
-			output2.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+			//var identifiedRoom=data.handle + ' .msgclass';
+			//alert('appended msg '+identifiedRoom);
+			var outputelement= $("#Devops .mainoutput");
+			var a= $("#output");
+			alert(outputelement);
+			//alert(outputelement.val());
+     		//$("#"+identifiedRoom).val(data.message));
+			//var feedback2 = document.getElementById('feedback'),
+			// output2 = document.getElementById('output');
+			//feedback2.innerHTML = "";
+			//alert(outputelement)
+			outputelement.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
 		});
+		socket1.on('availableUsers', function(data){
+		    alert('grabbing it on client 2' + function(data));			
+			var table = document.getElementById('usersTable');
+			$.each(obj.users,function(data){
+				var tr=document.createElement('tr');
+				tr.innerHTML = '<td '+'id='+obj.users.userId+ '>' + obj.users.userName + '</td>';
+				table.appendChild(tr);
+			});			
 		});
+		
+		
 		//alert(localStorage.getItem('socket'));
 		// $('#usersTable').on( 'click', 'tr', function (e) {
 		emitMessage = function(clickedid) {
             alert('hello..'+clickedid);
-     		//alert("id..");
-				var message = document.getElementById('message');
+			var typedmsg=clickedid + ' .msgclass';
+			alert('appended msg '+typedmsg);
+			alert('dummyy..'+ $("#Devops .msgclass").val());
+     		alert("typed msg.. " + $("#"+typedmsg).val());
+				//var message = document.getElementById('message');
 				/*btn = document.getElementById('send'),
 				output2 = document.getElementById('output'),
 				//loggedInUser = document.getElementById('loggedInUser'),
 				feedback2 = document.getElementById('feedback');
 			//alert(message.value);
 			//alert(document.getElementById('loggedInUser').value);
-			//alert(logedInUser.value);*/
-			
-				socket1.emit('main chat', {
-							message: message.value,
+			//alert(logedInUser.value);*/			
+			socket1.emit('main chat', {
+							message: $("#"+typedmsg).val(),
 							handle: clickedid							
 				})
 		}
@@ -78,8 +98,8 @@
 			var divId=value.value;
 			div.setAttribute("id", divId);
 			div.innerHTML = '<p>' +'hi....' + '</p>';
-			var html1=' <div class="chat-window"><div id="output"></div><div id="feedback"></div>'+
-			'</div><input id="message" type="text" placeholder="Message" />';
+			var html1=' <div class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
+			'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
 			var button1=document.createElement('button');
 			button1.setAttribute("id",divId);
 			button1.setAttribute("onclick","emitMessage(this.id);");

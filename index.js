@@ -206,18 +206,16 @@ app.get('/loadData',
 			  }]
 		  }
 	  ]};
-	  
-	 
-	  var subbu_rooms=['Agile','Devops','SmartLearning'];
-	  //var subbu_rooms={};
-	  map.set("subbu", subbu_rooms);
-	  map.set("arun", subbu_rooms);
-      console.log('map size' + map.size); 
+
+		//socket start
+		
+		//socked end
 	  res.json(JSON.stringify(rooms));
   });
 
-require('./routes/note.routes.js')(app);
 
+require('./routes/note.routes.js')(app);
+		
 var server = app.listen(4000, function(){
     console.log('listening for requests on port 4000,');
 });
@@ -229,29 +227,34 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 routes(app);
 
-
 var io = socket(server);
  io.on('connection', (socket) => {
 
 	var user1 = socket.handshake.query.currentUser;
     console.log('made socket connection', socket.id);
 	console.log("curentuser.."+ user1);
+	map.set(socket.id, user1);
+	io.sockets.emit('availableUsers',map);
 	console.log("map size inside socket.."+ map.size);
-	map.forEach(function(value, key) {
-		console.log(key + " : " + value);
-		value.forEach(function(room) {
-			console.log(room);
-			socket.join(room);
-		});
-	});
+	
+	var subbu_rooms=['Agile','Devops','SmartLearning'];
+	 	 
+      console.log('map size... ' + map.size);
+	  for(var i in subbu_rooms){
+			console.log(i + ".." + subbu_rooms[i]);
+			socket.join(subbu_rooms[i]);
+			//io.sockets.emit('joined message',subbu_rooms);
+	  }
+		
 	//io.sockets.emit('main chat',data);
 	//console.log('user joined room #'+room);
-	console.log(socket.rooms);
+	//console.log(socket.rooms);
+	
 	socket.on('main chat', function(data) {
-		console.log('grabbing on server', data);
+		console.log('grabbing on server.. ', data);
 		var room = data.handle;
 		var message = data.message;
-		io.to(room).emit('main chat', data);
+		io.sockets.emit('main chat', data);
 	});
 	//disconnect
 	socket.on('disconnect', function() {
@@ -302,3 +305,7 @@ var io = socket(server);
         socket.broadcast.emit('typing', data);
     });
 });
+
+
+
+
