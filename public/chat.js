@@ -113,7 +113,7 @@
 			var button1=document.createElement('button');
 			button1.setAttribute("id","btn_"+divId);
 			button1.setAttribute("onclick","emitMessage(this.id);");
-			var t = document.createTextNode("CLICK ME");
+			var t = document.createTextNode("Send Message");
 			button1.appendChild(t);			
 			div.innerHTML=html1;
 			div.appendChild(button1);			
@@ -125,12 +125,12 @@
 			tr.innerHTML = '<td '+'id='+value.userId+ '>' + value.userName + '</td>';
 			table.appendChild(tr);
 		});*/
-		var table2 = document.getElementById('roomMembersTable');
+		/*var table2 = document.getElementById('roomMembersTable');
 		$.each(obj.roomsList,function(key,value){
 			var tr=document.createElement('tr');
 			tr.innerHTML = '<td>' + value.value + '</td>';
 			table2.appendChild(tr);
-		});		
+		});		*/
 	});
 	//alert('hi');
 	
