@@ -18,7 +18,9 @@
 		//alert("logged.." + $('#loggedInUser').val());
 		userfinal=obj.userName;		
 		$('#welcomeMessage').text('Welcome '+ obj.userName);
-		 socket1 = io.connect('http://localhost:4000?currentUser='+obj.userName);
+		 socket1 = io.connect('http://localhost:4000?currentUser='+obj.userName,{
+				upgrade: false, transports: ['websocket']});
+		
 		 socket1.on('one-one chat', function(data){
 		   alert('on it');
 			if(document.getElementById(data.handle + '_'+ data.targetUser)){
@@ -40,25 +42,36 @@
 				$('#'+divId).dialog();	
 			}
 		 });
-		socket1.on('main chat', function(data){
+		socket1.on('main chat', function(data,userid){
 		   // alert('grabbing it on client');
 			//var identifiedRoom=data.handle + ' .msgclass';
 			//alert('appended msg '+identifiedRoom);
+			var user = userid;
+			console.log("WHO PINGED "+ user);
 			var outputelement=document.getElementById(data.handle+'_chat-window');//document.getElementById(data.handle);// .mainoutput");
 			block_to_insert = document.createElement( 'div' );
-			block_to_insert.innerHTML = data.message ;
+			block_to_insert.innerHTML = user+":"+data.message ;
 			outputelement.appendChild(block_to_insert);		
 			//outputelement.innerHTML = '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
 			
 		});
 		socket1.on('availableUsers', function(data){
-		   // alert('grabbing it on client - available users');			
-			/*var table = document.getElementById('usersTable');
-			$.each(obj.users,function(data){
+		   // alert('grabbing it on client - available users');	
+		   var table = document.getElementById('usersTable');
+		   $("#usersTable tr").remove();
+		   var obj=jQuery.parseJSON(data);		   
+		   for(var i in obj){
+				//alert("socketid " + obj[i].socketid);
+				var tr=document.createElement('tr');
+				tr.innerHTML = '<td '+'id='+obj[i].userid+ '>' + obj[i].userid + '</td>';
+				table.appendChild(tr);
+		   }
+			
+			/*$.each(obj.users,function(data){
 				var tr=document.createElement('tr');
 				tr.innerHTML = '<td '+'id='+obj.users.userId+ '>' + obj.users.userName + '</td>';
 				table.appendChild(tr);
-			});	*/		
+			});	*/	
 		});
 		
 		
@@ -106,12 +119,12 @@
 			div.appendChild(button1);			
 			mainchatplaceholder.appendChild(div);	
 		});
-		var table = document.getElementById('usersTable');
-		$.each(obj.users,function(key,value){
+		//var table = document.getElementById('usersTable');
+		/*$.each(obj.users,function(key,value){
 			var tr=document.createElement('tr');
 			tr.innerHTML = '<td '+'id='+value.userId+ '>' + value.userName + '</td>';
 			table.appendChild(tr);
-		});
+		});*/
 		var table2 = document.getElementById('roomMembersTable');
 		$.each(obj.roomsList,function(key,value){
 			var tr=document.createElement('tr');

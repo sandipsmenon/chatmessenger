@@ -233,29 +233,50 @@ var io = socket(server);
 	var user1 = socket.handshake.query.currentUser;
     console.log('made socket connection', socket.id);
 	console.log("curentuser.."+ user1);
-	map.set(socket.id, user1);
-	io.sockets.emit('availableUsers','hi');
+	map.set(socket.id, user1);	
 	console.log("map size inside socket.."+ map.size);
 	
 	var subbu_rooms=['Agile','Devops','SmartLearning'];
 	 	 
-      console.log('map size... ' + map.size);
+    console.log('map size... ' + map.size);
+	
+	function MyClass(){
+		this.socketid=' ';
+		this.userid=' ';
+	}
+	var finalArray = new Array();
+	map.forEach((v,k)=>{
+		var instance = new MyClass();
+		instance.userid=v;
+		instance.socketid=k;
+		finalArray.push(instance);
+		
+	});
+	console.log('final array size..'+finalArray.length);
+	console.log(JSON.stringify(finalArray));
+	
 	  for(var i in subbu_rooms){
 			console.log(i + ".." + subbu_rooms[i]);
 			socket.join(subbu_rooms[i]);
 			//io.sockets.emit('joined message',subbu_rooms);
 	  }
 		
-	//io.sockets.emit('main chat',data);
+	io.sockets.emit('availableUsers',JSON.stringify(finalArray));
 	//console.log('user joined room #'+room);
 	//console.log(socket.rooms);
 	
 	socket.on('main chat', function(data) {
 		console.log('grabbing on server.. ', data);
 		var user_who_pinged=map.get(socket.id);
+       // var obj1 = JSON.parse(data);
+       // obj1.push({"user_who_pinged":"ewerwer"});
+		//jsonStr = JSON.stringify(obj1);
+		//console.log(" DATA MESSAGE" + data.message);
+		//data.message = user_who_pinged+data.message;
+		//console.log(" DATA before emitting"+data.message);
 		var room = data.handle;
 		var message = data.message;		
-		io.sockets.in(room).emit('main chat', data);
+		io.sockets.in(room).emit('main chat', data,user_who_pinged);
 	});
 	//disconnect
 	socket.on('disconnect', function() {
@@ -265,7 +286,17 @@ var io = socket(server);
 			io.sockets.emit('leave message',subbu_rooms);
 		}*/
 		map.delete(socket.id);
-		io.sockets.emit('availableUsers','hi');	 
+		var finalArray1= new Array();
+		console.log('after disconnect '+ map.size);
+		map.forEach((v,k)=>{
+		var instance = new MyClass();
+			instance.userid=v;
+			instance.socketid=k;
+			finalArray1.push(instance);
+			console.log('final array size..'+finalArray1.length);
+			io.sockets.emit('availableUsers',JSON.stringify(finalArray1));
+		});
+		//io.sockets.emit('availableUsers','hi');	 
 	});
 	
 	var userNames = {};
