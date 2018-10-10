@@ -110,7 +110,9 @@ app.get('/loadData',
   require('connect-ensure-login').ensureLoggedIn(),
   function(req, res){
 	  console.log('inside load data');
-	  var rooms ={"userName":req.user.username,
+	  var user = req.user.username.replace(/\s/g,"");
+	  console.log(user);
+	  var rooms ={"userName":user,
 				  "userId":"35333",
 				  "users":[
 				  {
