@@ -312,31 +312,44 @@ var io = socket(server);
 
     // Handle chat event
     socket.on('one-one chat', function(data){
-        console.log(data);
+        console.log('inside one on one chat '+data.targetUser);
+		var user_who_pinged=map.get(socket.id);
 		//var userName = data.handle;
-		//var socketId = data.targetUser;
-		var room=data.handle + '_' ;
+		//var socketId = data.targetUser;		
 		var targetUser=data.targetUser;
-		console.log(room);
-		finalroom= room + targetUser;
+		console.log("data.handle " + data.handle);
+		//finalroom= room + targetUser;
 		//console.log(finalroom);
 		var clients = io.sockets.clients();
-		/*var sockets = socketio.sockets.sockets;
-		for(var socketId in sockets)
-		{
-			var socket1 = sockets[socketId]; //loop through and do whatever with each connected socket
-			socket1.join(data.handle_data_targetUser);
-		//...
-		}*/
-		if(socket.rooms[finalroom]){
+		var targetSocket='';
+		map.forEach((v,k)=>{
+			console.log(v + "..."+ k);
+			if(data.targetUser === v){
+				console.log('inside if');
+				targetSocket=k;
+			}		
+		});
+		
+		//var ns = global.io.of(namespace || "/"); 
+		//var socket = ns.connected[targetSocket];
+		if(socket.rooms[data.handle]){
 		 // in the room
-		  console.log('existing');
-		  io.to(finalroom).emit('one-one chat', data);
+		  console.log('existing room');
+		  
 		}else{
 		// not in the room
-			console.log('new room');
-			socket.join(finalroom);
-		}       
+			console.log('creating a new room');
+			socket.join(data.handle);
+		}     
+		if(io.sockets.connected[targetSocket].rooms[data.handle]){
+		 // in the room
+		  console.log('existing room');		  
+		}else{
+		// not in the room
+			console.log('creating a new room');
+			io.sockets.connected[targetSocket].join(data.handle);
+		} 
+		io.sockets.in(data.handle).emit('one-one chat', data,user_who_pinged);		
     });
 
     // Handle typing event

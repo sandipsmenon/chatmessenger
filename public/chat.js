@@ -21,25 +21,47 @@
 		 socket1 = io.connect('http://localhost:4000?currentUser='+obj.userName,{
 				upgrade: false, transports: ['websocket']});
 		
-		 socket1.on('one-one chat', function(data){
-		   alert('on it');
-			if(document.getElementById(data.handle + '_'+ data.targetUser)){
-			feedback.innerHTML = "";
-			output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+		 socket1.on('one-one chat', function(data,userwhopinged){
+		    var outputelement=document.getElementById(data.handle+'_chat-window');//document.getElementById(data.handle);// .mainoutput");
+			if(outputelement){
+				alert('inside if');
+				block_to_insert = document.createElement( 'div' );
+				block_to_insert.innerHTML = userwhopinged+":"+data.message ;
+				outputelement.appendChild(block_to_insert);				
 			}
 			else{
-				feedback.innerHTML = "";
-				output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+				//alert('inside else');
 				var div=document.createElement('div');
 				var divplaceholder= document.getElementById('dialogplaceholder');
-				var divId=data.handle+'_'+ data.targetUser;
+				//alert(clickedCell.text());
+				//alert('data.handle... ' + data.handle);
+				var divId=data.handle;
+				//copied				
+				var div=document.createElement('div');
+				
+				//alert(clickedRoom.text());				
 				div.setAttribute("id", divId);
 				div.innerHTML = '<p>' +'hi....' + '</p>';
-				var html1=' <div class="chat-window"><div id="output"></div><div id="feedback"></div>'+
-				'</div><input id="message" class="msgclass" type="text" placeholder="Message" /><button id="send" onclick="emitMessage()">Send</button>';
-				div.innerHTML=html1;				
-				divplaceholder.appendChild(div);			
-				$('#'+divId).dialog();	
+				var divv=divId+'_chat-window';
+				var html1=' <div id='+divv+' class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
+				'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
+				var button1=document.createElement('button');
+				button1.setAttribute("id","btn_"+divId);
+				button1.setAttribute("onclick","emitPrivateMessage(this.id,$('#loggedInUser').val());");
+				var t = document.createTextNode("Send Message");
+				button1.appendChild(t);			
+				div.innerHTML=html1;
+				div.appendChild(button1);			
+				divplaceholder.appendChild(div);
+				block_to_insert = document.createElement( 'div' );
+				block_to_insert.innerHTML = userwhopinged+":"+data.message ;
+				document.getElementById(data.handle+'_chat-window').appendChild(block_to_insert);								
+				//$('#'+divId).dialog();
+				$('#'+divId).dialog(
+				  {
+					width: 600,
+					height: 400					
+				  });
 			}
 		 });
 		socket1.on('main chat', function(data,userid){
@@ -74,7 +96,26 @@
 			});	*/	
 		});
 		
-		
+		emitPrivateMessage = function(clickedid,targetUser) {
+            //alert('hello..'+clickedid.substr(4));
+			var typedmsg=clickedid.substr(4) + ' .msgclass';
+			//alert('appended msg '+typedmsg);
+			//alert('dummyy..'+ $("#Devops .msgclass").val());
+     		//alert("typed msg.. " + $("#"+typedmsg).val());
+				//var message = document.getElementById('message');
+				/*btn = document.getElementById('send'),
+				output2 = document.getElementById('output'),
+				//loggedInUser = document.getElementById('loggedInUser'),
+				feedback2 = document.getElementById('feedback');
+			//alert(message.value);
+			//alert(document.getElementById('loggedInUser').value);
+			//alert(logedInUser.value);*/			
+			socket1.emit('one-one chat', {
+							message: $("#"+typedmsg).val(),
+							handle: clickedid.substr(4),
+							targetUser : targetUser
+				})
+		}
 		//alert(localStorage.getItem('socket'));
 		// $('#usersTable').on( 'click', 'tr', function (e) {
 		emitMessage = function(clickedid) {
@@ -158,13 +199,23 @@
 				var divplaceholder= document.getElementById('dialogplaceholder');
 				//alert(clickedCell.text());
 				var divId=$('#loggedInUser').val()+'_'+ clickedCell.text();
+				//copied				
+				var div=document.createElement('div');
+				
+				//alert(clickedRoom.text());				
 				div.setAttribute("id", divId);
 				div.innerHTML = '<p>' +'hi....' + '</p>';
-				var html1=' <p></p><div class="chat-window"><div id="output"></div><div id="feedback"></div>'+
-				'<input id="message" type="text" placeholder="Message" />'+
-				'<button id="send" onclick="emitMessage()">Send</button></div>';
-				div.innerHTML=html1;				
-				divplaceholder.appendChild(div);
+				var divv=divId+'_chat-window';
+				var html1=' <div id='+divv+' class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
+				'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
+				var button1=document.createElement('button');
+				button1.setAttribute("id","btn_"+divId);
+				button1.setAttribute("onclick","emitPrivateMessage(this.id,clickedCell.text());");
+				var t = document.createTextNode("Send Message");
+				button1.appendChild(t);			
+				div.innerHTML=html1;
+				div.appendChild(button1);			
+				divplaceholder.appendChild(div);	
 				//$('#'+divId).dialog();
 				$('#'+divId).dialog(
 				  {
