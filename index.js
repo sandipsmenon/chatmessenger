@@ -234,7 +234,7 @@ var io = socket(server);
     console.log('made socket connection', socket.id);
 	console.log("curentuser.."+ user1);
 	map.set(socket.id, user1);
-	io.sockets.emit('availableUsers',map);
+	io.sockets.emit('availableUsers','hi');
 	console.log("map size inside socket.."+ map.size);
 	
 	var subbu_rooms=['Agile','Devops','SmartLearning'];
@@ -252,14 +252,20 @@ var io = socket(server);
 	
 	socket.on('main chat', function(data) {
 		console.log('grabbing on server.. ', data);
+		var user_who_pinged=map.get(socket.id);
 		var room = data.handle;
-		var message = data.message;
-		io.sockets.emit('main chat', data);
+		var message = data.message;		
+		io.sockets.in(room).emit('main chat', data);
 	});
 	//disconnect
 	socket.on('disconnect', function() {
-	//	socket.leave(room);
-		console.log('user disconnected');
+		/*for(var i in subbu_rooms){
+			console.log(subbu_rooms);			
+			socket.leave(subbu_rooms);
+			io.sockets.emit('leave message',subbu_rooms);
+		}*/
+		map.delete(socket.id);
+		io.sockets.emit('availableUsers','hi');	 
 	});
 	
 	var userNames = {};

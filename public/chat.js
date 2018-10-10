@@ -41,39 +41,35 @@
 			}
 		 });
 		socket1.on('main chat', function(data){
-		    alert('grabbing it on client');
+		   // alert('grabbing it on client');
 			//var identifiedRoom=data.handle + ' .msgclass';
 			//alert('appended msg '+identifiedRoom);
-			var outputelement= $("#Devops .mainoutput");
-			var a= $("#output");
-			alert(outputelement);
-			//alert(outputelement.val());
-     		//$("#"+identifiedRoom).val(data.message));
-			//var feedback2 = document.getElementById('feedback'),
-			// output2 = document.getElementById('output');
-			//feedback2.innerHTML = "";
-			//alert(outputelement)
-			outputelement.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+			var outputelement=document.getElementById(data.handle+'_chat-window');//document.getElementById(data.handle);// .mainoutput");
+			block_to_insert = document.createElement( 'div' );
+			block_to_insert.innerHTML = data.message ;
+			outputelement.appendChild(block_to_insert);		
+			//outputelement.innerHTML = '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+			
 		});
 		socket1.on('availableUsers', function(data){
-		    alert('grabbing it on client 2' + function(data));			
-			var table = document.getElementById('usersTable');
+		   // alert('grabbing it on client - available users');			
+			/*var table = document.getElementById('usersTable');
 			$.each(obj.users,function(data){
 				var tr=document.createElement('tr');
 				tr.innerHTML = '<td '+'id='+obj.users.userId+ '>' + obj.users.userName + '</td>';
 				table.appendChild(tr);
-			});			
+			});	*/		
 		});
 		
 		
 		//alert(localStorage.getItem('socket'));
 		// $('#usersTable').on( 'click', 'tr', function (e) {
 		emitMessage = function(clickedid) {
-            alert('hello..'+clickedid);
-			var typedmsg=clickedid + ' .msgclass';
-			alert('appended msg '+typedmsg);
-			alert('dummyy..'+ $("#Devops .msgclass").val());
-     		alert("typed msg.. " + $("#"+typedmsg).val());
+            //alert('hello..'+clickedid.substr(4));
+			var typedmsg=clickedid.substr(4) + ' .msgclass';
+			//alert('appended msg '+typedmsg);
+			//alert('dummyy..'+ $("#Devops .msgclass").val());
+     		//alert("typed msg.. " + $("#"+typedmsg).val());
 				//var message = document.getElementById('message');
 				/*btn = document.getElementById('send'),
 				output2 = document.getElementById('output'),
@@ -84,7 +80,7 @@
 			//alert(logedInUser.value);*/			
 			socket1.emit('main chat', {
 							message: $("#"+typedmsg).val(),
-							handle: clickedid							
+							handle: clickedid.substr(4)							
 				})
 		}
 
@@ -98,14 +94,14 @@
 			var divId=value.value;
 			div.setAttribute("id", divId);
 			div.innerHTML = '<p>' +'hi....' + '</p>';
-			var html1=' <div class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
+			var divv=divId+'_chat-window';
+			var html1=' <div id='+divv+' class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
 			'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
 			var button1=document.createElement('button');
-			button1.setAttribute("id",divId);
+			button1.setAttribute("id","btn_"+divId);
 			button1.setAttribute("onclick","emitMessage(this.id);");
 			var t = document.createTextNode("CLICK ME");
-			button1.appendChild(t);
-			//html1.innerHTML='<button> id="send" onclick="emitMessage()">Send</button>';
+			button1.appendChild(t);			
 			div.innerHTML=html1;
 			div.appendChild(button1);			
 			mainchatplaceholder.appendChild(div);	
