@@ -110,7 +110,7 @@ app.get('/loadData',
   require('connect-ensure-login').ensureLoggedIn(),
   function(req, res){
 	  console.log('inside load data');
-	  var rooms ={"userName":"subbu",
+	  var rooms ={"userName":req.user.username,
 				  "userId":"35333",
 				  "users":[
 				  {
