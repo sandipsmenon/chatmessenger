@@ -110,9 +110,11 @@ app.get('/loadData',
   require('connect-ensure-login').ensureLoggedIn(),
   function(req, res){
 	  console.log('inside load data');
+	  var profilepic= req.user.thumbnail;
 	  var user = req.user.username.replace(/\s/g,"");
 	  console.log(user);
 	  var rooms ={"userName":user,
+	  			"profilepic" :profilepic,
 				  "userId":"35333",
 				  "users":[
 				  {
@@ -270,23 +272,13 @@ var io = socket(server);
 	socket.on('main chat', function(data) {
 		console.log('grabbing on server.. ', data);
 		var user_who_pinged=map.get(socket.id);
-       // var obj1 = JSON.parse(data);
-       // obj1.push({"user_who_pinged":"ewerwer"});
-		//jsonStr = JSON.stringify(obj1);
-		//console.log(" DATA MESSAGE" + data.message);
-		//data.message = user_who_pinged+data.message;
-		//console.log(" DATA before emitting"+data.message);
-		var room = data.handle;
-		var message = data.message;		
+   var room = data.handle;
+				var message = data.message;		
 		io.sockets.in(room).emit('main chat', data,user_who_pinged);
 	});
 	//disconnect
 	socket.on('disconnect', function() {
-		/*for(var i in subbu_rooms){
-			console.log(subbu_rooms);			
-			socket.leave(subbu_rooms);
-			io.sockets.emit('leave message',subbu_rooms);
-		}*/
+
 		map.delete(socket.id);
 		var finalArray1= new Array();
 		console.log('after disconnect '+ map.size);
@@ -298,7 +290,7 @@ var io = socket(server);
 			console.log('final array size..'+finalArray1.length);
 			io.sockets.emit('availableUsers',JSON.stringify(finalArray1));
 		});
-		//io.sockets.emit('availableUsers','hi');	 
+ 
 	});
 	
 	var userNames = {};
@@ -314,12 +306,10 @@ var io = socket(server);
     socket.on('one-one chat', function(data){
         console.log('inside one on one chat '+data.targetUser);
 		var user_who_pinged=map.get(socket.id);
-		//var userName = data.handle;
-		//var socketId = data.targetUser;		
+		
 		var targetUser=data.targetUser;
 		console.log("data.handle " + data.handle);
-		//finalroom= room + targetUser;
-		//console.log(finalroom);
+
 		var clients = io.sockets.clients();
 		var targetSocket='';
 		map.forEach((v,k)=>{
