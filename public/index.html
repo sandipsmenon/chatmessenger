@@ -1,4 +1,27 @@
-<div align="center">
+<HTML>
+   <HEAD>
+      <TITLE>NINJA CHAT MESSENGER</TITLE>
+   </HEAD>
+
+   <BODY>
+     
+     <style type="text/css"> 
+#mydiv {
+   position:fixed;
+    top: 50%;
+    left: 50%;
+    width:30em;
+    height:18em;
+    margin-top: -9em; /*set to a negative number 1/2 of your height*/
+    margin-left: -15em; /*set to a negative number 1/2 of your width*/
+    border: 1px solid #ccc;
+    background-color: #f3f3f3;
+}
+
+</style>
+
+
+<div align="center" id="mydiv">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
@@ -25,6 +48,7 @@ $.ajax({
 	});
 </script-->
 
+LOGIN with : 
 
 <p>
     <a id="fblogin" href='/auth/facebook'><img src="fb_logo.png" border="0" height="50" width="200"/></a>
@@ -35,4 +59,7 @@ $.ajax({
 <p>
 <a id="gitlogin" href='/auth/google'><img src="google.png" border="0" height="50" width="200"/></a>
 </p>
-</div>
+</div>   
+
+</BODY>
+</HTML>

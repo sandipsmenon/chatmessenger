@@ -24,7 +24,7 @@
 		 socket1.on('one-one chat', function(data,userwhopinged){
 		    var outputelement=document.getElementById(data.handle+'_chat-window');//document.getElementById(data.handle);// .mainoutput");
 			if(outputelement){
-				alert('inside if');
+				//alert('inside if');
 				block_to_insert = document.createElement( 'div' );
 				block_to_insert.innerHTML = userwhopinged+":"+data.message ;
 				outputelement.appendChild(block_to_insert);				
@@ -59,8 +59,8 @@
 				//$('#'+divId).dialog();
 				$('#'+divId).dialog(
 				  {
-					width: 600,
-					height: 400					
+					width: 300,
+					height: 300					
 				  });
 			}
 		 });
@@ -80,11 +80,13 @@
 		socket1.on('availableUsers', function(data){
 		   // alert('grabbing it on client - available users');	
 		   var table = document.getElementById('usersTable');
+		   var currentuser = $('#loggedInUser').val();
 		   $("#usersTable tr").remove();
 		   var obj=jQuery.parseJSON(data);		   
 		   for(var i in obj){
 				//alert("socketid " + obj[i].socketid);
 				var tr=document.createElement('tr');
+				if(! (obj[i].userid == currentuser))
 				tr.innerHTML = '<td '+'id='+obj[i].userid+ '>' + obj[i].userid + '</td>';
 				table.appendChild(tr);
 		   }
@@ -219,8 +221,8 @@
 				//$('#'+divId).dialog();
 				$('#'+divId).dialog(
 				  {
-					width: 600,
-					height: 400					
+					width: 300,
+					height: 300					
 				  });				
                 //$('#'+divId).dialog();				
               //  return false;
