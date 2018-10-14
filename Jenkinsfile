@@ -1,24 +1,12 @@
-pipeline {
+#!/usr/bin/env groovy
 
-    agent {
-        docker {
-            image 'node'
-            args '-u root'
-        }
+node {
+    stage('checkout') {
+        checkout scm
     }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building...'
-                sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-                sh 'npm start'
-            }
-        }
+    stage('check java') {
+        sh "java -version"
     }
+
 }
