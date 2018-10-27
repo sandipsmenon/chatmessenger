@@ -11,12 +11,35 @@
 		<script src="chat.js"></script>
 		<script src="utility.js"></script>
         <link href="/styles.css" rel="stylesheet" />
-		<script>
-		
-		</script>
+		<style>
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				background-color: #4267b2;
+			}
+
+			li {
+				float: left;
+				width:30%
+			}
+			
+            li h1{
+				text-align: left;
+			}
+			li p{
+				align: right;
+			}			
+		</style>
     </head>
     <body>
-	<p id="welcomeMessage"></p>
+	<ul>
+	  <li><img src="Chat-App-Logo.png" width="30%" height="30%"/></li>
+	  <li><h1 style="color:#fff;">Welcome to Chat App</h1></li>
+	  <li><p id="welcomeMessage"></p></li>
+	</ul>
+	
 	<input type="hidden" id="loggedInUser" name="loggedInUser" />
 	<input type="hidden" name="userId" />
 	
@@ -31,6 +54,7 @@
 	</table>
 	</td>
 	<td rowspan="2" style="width:200px; height: 500px">
+	<h2 align="center">Chat Room<h2/>
 	 <div id="mainchatplaceholder">
           		
     </div>
@@ -45,7 +69,8 @@
      
 	</td-->
 	<td style="width: 200px; height: 50px">
-	<h2>&nbsp;Available Users</h2>
+	<div id="waitingmsg"><h2>Waiting for users to login...</h2></div>
+	<div id="availableUsersMsgDiv"><h2>&nbsp;Available Users</h2></div>
 	<table id="usersTable" width="70%" class="onechat" border=1>
 	<!--tr>
 	<th><span></span>&nbsp;Available Users</th>

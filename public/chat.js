@@ -5,6 +5,7 @@
 	 $(document).ready(function(){
 	  var socket1;
 	 $("#mainchatplaceholder").hide();
+	 $("#availableUsersMsgDiv").hide();
 	  var message = document.getElementById('message'),
       btn = document.getElementById('send'),
       output2 = document.getElementById('output'),
@@ -17,7 +18,7 @@
 		$('#loggedInUser').val(obj.userName);
 	
 		userfinal=obj.userName;		
-		$('#welcomeMessage').text('Welcome '+ obj.userName);
+		$('#welcomeMessage').text(' '+ obj.userName);
 		 $('#welcomeMessage').prepend('<img id="theImg" src='+obj.profilepic+'>')
 		 //<img src="<%= obj.thumbnail %>" />
 
@@ -80,7 +81,15 @@
 		   var table = document.getElementById('usersTable');
 		   var currentuser = $('#loggedInUser').val();
 		   $("#usersTable tr").remove();
-		   var obj=jQuery.parseJSON(data);		   
+		   var obj=jQuery.parseJSON(data);
+		   if(obj.length>1){
+			   $("#waitingmsg").hide();
+			   $("#availableUsersMsgDiv").show();			   
+		   }
+		   else{
+			   $("#waitingmsg").show();
+			   $("#availableUsersMsgDiv").hide();			   
+		   }
 		   for(var i in obj){
 				//alert("socketid " + obj[i].socketid);
 				var tr=document.createElement('tr');
