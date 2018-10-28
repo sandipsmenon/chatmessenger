@@ -177,11 +177,7 @@
 				div.appendChild(button1);			
 				divplaceholder.appendChild(div);	
 			
-				$('#'+divId).dialog(
-				  {
-					width: 300,
-					height: 300					
-				  });				
+				$('#'+divId).dialog();				
             
             }
         );
