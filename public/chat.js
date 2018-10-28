@@ -42,9 +42,9 @@
 				var divId=data.handle;
 				
 				var div=document.createElement('div');
-					
+				div.setAttribute("title",userwhopinged);
 				div.setAttribute("id", divId);
-				div.innerHTML = '<p>' +'hi....' + '</p>';
+				//div.innerHTML = '<p>' +'hi....' + '</p>';
 				var divv=divId+'_chat-window';
 				var html1=' <div id='+divv+' class="chat-window"><div id="output" class="mainoutput"></div><div id="feedback"></div>'+
 				'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
@@ -158,11 +158,12 @@
 		$("#usersTable td").removeClass("highlight");
 		clickedCell= $(e.target).closest("td");
 		clickedCell.addClass("highlight");
-	    ;
+	    
             	var div=document.createElement('div');
 				var divplaceholder= document.getElementById('dialogplaceholder');
 				var divId=$('#loggedInUser').val()+'_'+ clickedCell.text();				
-				var div=document.createElement('div');		
+				var div=document.createElement('div');	
+				div.setAttribute("title",clickedCell.text());
 				div.setAttribute("id", divId);
 				div.innerHTML = '<p>' +'hi....' + '</p>';
 				var divv=divId+'_chat-window';
