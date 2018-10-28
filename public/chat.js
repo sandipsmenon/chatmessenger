@@ -19,6 +19,7 @@
 	
 		userfinal=obj.userName;		
 		$('#welcomeMessage').text(' '+ obj.userName);
+		$('#welcomeMessage').addClass("welcomeuser");
 		 $('#welcomeMessage').prepend('<img id="theImg" src='+obj.profilepic+'>')
 		 //<img src="<%= obj.thumbnail %>" />
 
@@ -49,7 +50,7 @@
 				'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
 				var button1=document.createElement('button');
 				button1.setAttribute("id","btn_"+divId);
-				button1.setAttribute("onclick","emitPrivateMessage(this.id,$('#loggedInUser').val());");
+				button1.setAttribute("onclick","emitPrivateMessage(this.id,$('#loggedInUser').val(),$('#loggedInUser'));");
 				var t = document.createTextNode("Send Message");
 				button1.appendChild(t);			
 				div.innerHTML=html1;
@@ -59,11 +60,7 @@
 				block_to_insert.innerHTML = userwhopinged+":"+data.message ;
 				document.getElementById(data.handle+'_chat-window').appendChild(block_to_insert);								
 			
-				$('#'+divId).dialog(
-				  {
-					width: 300,
-					height: 300					
-				  });
+				$('#'+divId).dialog();
 			}
 		 });
 		socket1.on('main chat', function(data,userid){
@@ -100,16 +97,18 @@
 	
 		});
 		
-		emitPrivateMessage = function(clickedid,targetUser) {
+		emitPrivateMessage = function(clickedid,targetUser,cellselected) {
  
 			var typedmsg=clickedid.substr(4) + ' .msgclass';
+			cellselected.text ="";
 		
 			socket1.emit('one-one chat', {
 							message: $("#"+typedmsg).val(),
 							handle: clickedid.substr(4),
 							targetUser : targetUser
 				})
-		}
+
+				$(".msgclass").val("");	}
 
 		emitMessage = function(clickedid) {
     
@@ -119,6 +118,7 @@
 							message: $("#"+typedmsg).val(),
 							handle: clickedid.substr(4)							
 				})
+				$(".msgclass").val("");	
 		}
 
 		$.each(obj.roomsList,function(key,value){
@@ -170,7 +170,7 @@
 				'</div><input id="message" type="text" class="msgclass" placeholder="Message" />';
 				var button1=document.createElement('button');
 				button1.setAttribute("id","btn_"+divId);
-				button1.setAttribute("onclick","emitPrivateMessage(this.id,clickedCell.text());");
+				button1.setAttribute("onclick","emitPrivateMessage(this.id,clickedCell.text(),clickedCell);");
 				var t = document.createTextNode("Send Message");
 				button1.appendChild(t);			
 				div.innerHTML=html1;

@@ -109,3 +109,7 @@ tr:nth-child(odd) {
  background-color: #eee;
  color: Green;
 }
+
+.welcomeuser {
+    color: #fff
+ }
